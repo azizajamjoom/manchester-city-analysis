@@ -1,0 +1,35 @@
+name: NativeStats Web Scrape Pipeline
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # daily at 1am UTC
+  workflow_dispatch:
+
+env:
+  PG_USER: ${{ secrets.PG_USER }}
+  PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+  PG_HOST: ${{ secrets.PG_HOST }}
+  PG_DB: ${{ secrets.PG_DB }}
+
+jobs:
+  extract-load-raw:
+    name: Scrape NativeStats and Load to Raw
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas requests beautifulsoup4 sqlalchemy psycopg2-binary python-dotenv
+
+      - name: Run Web Scrape pipeline
+        run: |
+          python notebooks/Source_Web_Scrape_Extract_Load_Raw.py

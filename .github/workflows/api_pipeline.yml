@@ -1,0 +1,47 @@
+name: Football Data API Pipeline
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # daily at midnight UTC
+  workflow_dispatch:
+
+env:
+  API_KEY: ${{ secrets.91360cf0a429446fa500827cc43bd9d3 }}
+  PG_USER: ${{ secrets.PG_USER }}
+  PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+  PG_HOST: ${{ secrets.PG_HOST }}
+  PG_DB: ${{ secrets.PG_DB }}
+
+jobs:
+  extract-load-raw:
+    name: Extract & Load Football API Data to Raw
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas requests sqlalchemy psycopg2-binary python-dotenv
+
+      - name: Run API data pipeline
+        run: |
+          python notebooks/Source_API_Extract_Load_Raw.py
+
+
+          - name: Commit and push changes
+            run: |
+              git config --global user.name "GitHub Actions"
+              git config --global user.email "actions@github.com"
+              git add .
+              git commit -m "Update data from API pipeline"
+              git push
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
