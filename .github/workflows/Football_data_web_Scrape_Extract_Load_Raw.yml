@@ -18,7 +18,9 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        - uses: actions/checkout@v3
+  with:
+    path: sql-project 
 
       - name: Set up Python
         uses: actions/setup-python@v4
