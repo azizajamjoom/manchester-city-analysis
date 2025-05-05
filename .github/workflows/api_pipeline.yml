@@ -33,11 +33,11 @@ jobs:
 
       - name: Convert notebook to Python script
         run: |
-          jupyter nbconvert --to script "notebooks/[Source]_API_Extract_Load_Raw.ipynb"
+          jupyter nbconvert --to script "notebooks/Native_API_Extract_Load_Raw.ipynb"
 
       - name: Run API data pipeline
         run: |
-          python notebooks/[Source]_API_Extract_Load_Raw.py
+          python notebooks/Native_API_Extract_Load_Raw.py
 
       - name: Commit and push changes
         run: |
